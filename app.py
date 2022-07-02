@@ -9,39 +9,45 @@ from geopy.geocoders import Nominatim
 loc = Nominatim(user_agent="GetLoc")
 
 '''
-# TaxiFareModel front
+# New York Taxi Fare Estimator
 '''
 
 d = st.date_input("Pickup Date")
 t = st.time_input('Pickup Time')
 dt = datetime.combine(d, t)
 
-print(dt)
-
 dt = datetime.strftime(dt, '%Y-%m-%d %H:%M:%S')
 st.write('Pickup time:', dt)
 
 pickup = st.text_input('Pickup Location', placeholder='Enter your pickup location',
                        value='Madison Square Garden, New York')
+pickupLoc = None
 if pickup:
-    pickupLoc = loc.geocode(pickup)
+    try:
+        pickupLoc = loc.geocode(pickup)
+    except:
+        pass
     if pickupLoc:
-        st.write('Pickup Adderss:', pickupLoc.address)
-        st.write("Latitude = ", pickupLoc.latitude, "\n")
+        st.write('Pickup Address:', pickupLoc.address)
+        st.write("Latitude = ", pickupLoc.latitude, )
         st.write("Longitude = ", pickupLoc.longitude)
 
-dropoff = st.text_input('Dropoff Location', placeholder='Enter your dropoff location',
+dropoff = st.text_input('Drop Off Location', placeholder='Enter your drop off location',
                         value='Trump Tower, New York')
+dropoffLoc = None
 if dropoff:
-    dropoffLoc = loc.geocode(dropoff)
+    try:
+        dropoffLoc = loc.geocode(dropoff)
+    except:
+        pass
     if dropoffLoc:
-        st.write('Dropoff Adderss:', pickupLoc.address)
-        st.write("Latitude = ", dropoffLoc.latitude, "\n")
+        st.write('Drop Off Address:', dropoffLoc.address)
+        st.write("Latitude = ", dropoffLoc.latitude)
         st.write("Longitude = ", dropoffLoc.longitude)
 
 passenger = st.slider('passenger count', 1, 4, 1)
 
-if st.button('Predict'):
+if st.button('Predict') and pickupLoc and dropoffLoc:
     data = {
         'pickup_datetime': dt,
         'pickup_longitude': pickupLoc.longitude,
@@ -52,6 +58,8 @@ if st.button('Predict'):
     }
     response = requests.get("https://taxifare.lewagon.ai/predict", params=data)
     if response.ok:
-        st.header('Fare: $' + str(round(response.json()['fare'], 2)))
+        st.header('Fare Estimate: $' + str(round(response.json()['fare'], 2)))
     elif response.status_code == 400:
         st.header("Something went wrong")
+else:
+    st.header("Something went wrong")
