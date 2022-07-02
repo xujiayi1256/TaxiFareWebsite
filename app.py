@@ -26,7 +26,7 @@ if pickup:
     try:
         pickupLoc = loc.geocode(pickup)
     except:
-        pass
+        st.write('Something wrong with your pickup location...')
     if pickupLoc:
         st.write('Pickup Address:', pickupLoc.address)
         st.write("Latitude = ", pickupLoc.latitude, )
@@ -39,7 +39,7 @@ if dropoff:
     try:
         dropoffLoc = loc.geocode(dropoff)
     except:
-        pass
+        st.write('Something wrong with your drop off location...')
     if dropoffLoc:
         st.write('Drop Off Address:', dropoffLoc.address)
         st.write("Latitude = ", dropoffLoc.latitude)
@@ -61,5 +61,3 @@ if st.button('Predict') and pickupLoc and dropoffLoc:
         st.header('Fare Estimate: $' + str(round(response.json()['fare'], 2)))
     elif response.status_code == 400:
         st.header("Something went wrong")
-else:
-    st.header("Something went wrong")
