@@ -4,6 +4,7 @@ import requests
 import streamlit as st
 # importing geopy library
 from geopy.geocoders import Nominatim
+import pandas as pd
 
 # calling the Nominatim tool
 loc = Nominatim(user_agent="GetLoc")
@@ -29,8 +30,9 @@ if pickup:
         st.write('Something wrong with your pickup location...')
     if pickupLoc:
         st.write('Pickup Address:', pickupLoc.address)
-        st.write("Latitude = ", pickupLoc.latitude, )
-        st.write("Longitude = ", pickupLoc.longitude)
+        # st.write("Latitude = ", pickupLoc.latitude)
+        # st.write("Longitude = ", pickupLoc.longitude)
+        st.map(pd.DataFrame([{'lat':pickupLoc.latitude,'lon':pickupLoc.longitude}]),zoom=14)
 
 dropoff = st.text_input('Drop Off Location', placeholder='Enter your drop off location',
                         value='Trump Tower, New York')
@@ -42,8 +44,9 @@ if dropoff:
         st.write('Something wrong with your drop off location...')
     if dropoffLoc:
         st.write('Drop Off Address:', dropoffLoc.address)
-        st.write("Latitude = ", dropoffLoc.latitude)
-        st.write("Longitude = ", dropoffLoc.longitude)
+        # st.write("Latitude = ", dropoffLoc.latitude)
+        # st.write("Longitude = ", dropoffLoc.longitude)
+        st.map(pd.DataFrame([{'lat': dropoffLoc.latitude, 'lon': dropoffLoc.longitude}]),zoom=14)
 
 passenger = st.slider('passenger count', 1, 4, 1)
 
